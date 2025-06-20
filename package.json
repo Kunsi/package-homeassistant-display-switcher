@@ -2,6 +2,10 @@
     "name": "HASS Entity Power Switcher",
     "author": "kunsi",
     "desc": "Switch display power based on home assistant entity state",
+    "nesting": {
+        "parents": "any",
+        "childs": []
+    },
     "platforms": ["pi/epoch-1", "pi/epoch-2"],
     "offline": {
         "support": "no",
