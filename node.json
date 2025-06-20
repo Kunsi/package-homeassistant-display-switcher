@@ -1,5 +1,5 @@
 {
-    "name": "HomeAssistant Entity Power Switcher",
+    "name": "HASS Entity Power Switcher",
     "permissions": {
         "network": "Needs to talk to home assistant"
     },
