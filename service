@@ -13,7 +13,7 @@ CONFIG.restart_on_update()
 def main():
     sleep(2)
 
-    URL = CONFIG["url"]
+    URL = CONFIG["url"].rstrip("/")
     TOKEN = CONFIG["api_token"]
     ENTITY = CONFIG["entity_id"]
     COMP = CONFIG["comparison"]
@@ -22,9 +22,6 @@ def main():
     if not URL:
         # default config
         sleep(86400)
-
-    if not URL.endswith("/"):
-        URL = URL + "/"
 
     try:
         r = get(
