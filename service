@@ -5,7 +5,7 @@ from traceback import print_exc
 
 from requests import get
 
-from hosted import CONFIG, DEVICE, NODE
+from hosted import CONFIG, DEVICE, log
 
 CONFIG.restart_on_update()
 
@@ -24,18 +24,26 @@ def main():
         sleep(86400)
 
     try:
+        url = URL + "/api/states/" + ENTITY
+        log("getting " + url, "HASS")
+
         r = get(
-            URL + "/api/states/" + ENTITY,
+            url,
             headers={
                 "Authorization": "Bearer " + TOKEN,
                 "Content-Type": "application/json",
             },
         )
+        log(str(r.status_code), "HASS")
+        log(r.text, "HASS")
+
         r.raise_for_status()
         result = r.json()
 
         if "state" not in result:
             # oops?
+            log("ERR: no state, switching on", "HASS")
+
             DEVICE.screen(on=True)
         else:
             state = int(result["state"])
@@ -52,6 +60,8 @@ def main():
                 target_state = bool(state == TARGET)
             else:
                 raise ValueError("invalid comparison")
+
+            log("got state, target is " + str(target_state), "HASS")
 
             DEVICE.screen(on=target_state)
 
