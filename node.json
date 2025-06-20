@@ -1,0 +1,52 @@
+{
+    "name": "HomeAssistant Entity Power Switcher",
+    "permissions": {
+        "network": "Needs to talk to home assistant"
+    },
+    "options": [{
+        "title": "Home Assistant Login",
+        "type": "section"
+    }, {
+        "title": "Home Assistant URL",
+        "ui_width": 12,
+        "name": "url",
+        "type": "string",
+        "default": "",
+        "placeholder": "https://example.com:8123/"
+    }, {
+        "title": "API Token",
+        "ui_width": 12,
+        "name": "api_token",
+        "type": "string",
+        "default": "",
+        "hint": "go to profile -> security and create a long-lived access token"
+    }, {
+        "title": "Entity",
+        "type": "section"
+    }, {
+        "title": "Entity ID",
+        "ui_width": 4,
+        "name": "entity_id",
+        "type": "string",
+        "default": "zone.home"
+    }, {
+        "title": "Comparison",
+        "ui_width": 4,
+        "name": "comparison",
+        "type": "select",
+        "default": "gt",
+        "options": [
+            ["lt", "<"],
+            ["le", "<="],
+            ["gt", ">"],
+            ["ge", ">="],
+            ["eq", "=="]
+        ]
+    }, {
+        "title": "Target",
+        "ui_width": 4,
+        "name": "target",
+        "type": "integer",
+        "default": 0
+    }]
+}

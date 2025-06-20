@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+from time import sleep
+from traceback import print_exc
+
+from requests import get
+
+from hosted import CONFIG, DEVICE, NODE
+
+CONFIG.restart_on_update()
+
+
+URL = CONFIG["url"]
+TOKEN = CONFIG["api_token"]
+ENTITY = CONFIG["entity_id"]
+COMP = CONFIG["comparison"]
+TARGET = int(CONFIG["target"])
+
+
+def main():
+    sleep(2)
+
+    if not URL:
+        # default config
+        sleep(86400)
+
+    if not URL.endswith("/"):
+        URL = URL + "/"
+
+    try:
+        r = get(
+            URL + "/api/states/" + ENTITY,
+            headers={
+                "Authorization": "Bearer " + TOKEN,
+                "Content-Type": "application/json",
+            },
+        )
+        r.raise_for_status()
+        result = r.json()
+
+        if "state" not in result:
+            # oops?
+            DEVICE.screen(on=True)
+        else:
+            state = int(result["state"])
+
+            if COMP == "lt":
+                target_state = bool(state < TARGET)
+            elif COMP == "le":
+                target_state = bool(state <= TARGET)
+            elif COMP == "gt":
+                target_state = bool(state > TARGET)
+            elif COMP == "ge":
+                target_state = bool(state >= TARGET)
+            elif COMP == "eq":
+                target_state = bool(state == TARGET)
+            else:
+                raise ValueError("invalid comparison")
+
+            DEVICE.screen(on=target_state)
+
+        sleep(30)
+    except Exception as e:
+        print_exc()
+        sleep(60)
+
+
+if __name__ == "__main__":
+    main()
