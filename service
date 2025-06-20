@@ -10,15 +10,14 @@ from hosted import CONFIG, DEVICE, NODE
 CONFIG.restart_on_update()
 
 
-URL = CONFIG["url"]
-TOKEN = CONFIG["api_token"]
-ENTITY = CONFIG["entity_id"]
-COMP = CONFIG["comparison"]
-TARGET = int(CONFIG["target"])
-
-
 def main():
     sleep(2)
+
+    URL = CONFIG["url"]
+    TOKEN = CONFIG["api_token"]
+    ENTITY = CONFIG["entity_id"]
+    COMP = CONFIG["comparison"]
+    TARGET = int(CONFIG["target"])
 
     if not URL:
         # default config
