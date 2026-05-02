@@ -24,56 +24,57 @@ def main():
         # default config
         sleep(86400)
 
-    try:
-        url = URL + "/api/states/" + ENTITY
-        log("getting " + url, "HASS")
+    while True:
+        try:
+            url = URL + "/api/states/" + ENTITY
+            log("getting " + url, "HASS")
 
-        r = get(
-            url,
-            headers={
-                "Authorization": "Bearer " + TOKEN,
-                "Content-Type": "application/json",
-            },
-        )
-        log(str(r.status_code), "HASS")
-        log(r.text, "HASS")
+            r = get(
+                url,
+                headers={
+                    "Authorization": "Bearer " + TOKEN,
+                    "Content-Type": "application/json",
+                },
+            )
+            log(str(r.status_code), "HASS")
+            log(r.text, "HASS")
 
-        r.raise_for_status()
-        result = r.json()
+            r.raise_for_status()
+            result = r.json()
 
-        if "state" not in result:
-            # oops?
-            log("ERR: no state, switching on", "HASS")
+            if "state" not in result:
+                # oops?
+                log("ERR: no state, switching on", "HASS")
 
-            DEVICE.screen(on=True)
-        else:
-            if TARGET.isdigit():
-                TARGET = int(TARGET)
-                state = int(result["state"])
+                DEVICE.screen(on=True)
             else:
-                state = result["state"]
+                if TARGET.isdigit():
+                    TARGET = int(TARGET)
+                    state = int(result["state"])
+                else:
+                    state = result["state"]
 
-            if COMP == "lt":
-                target_state = bool(state < TARGET)
-            elif COMP == "le":
-                target_state = bool(state <= TARGET)
-            elif COMP == "gt":
-                target_state = bool(state > TARGET)
-            elif COMP == "ge":
-                target_state = bool(state >= TARGET)
-            elif COMP == "eq":
-                target_state = bool(state == TARGET)
-            else:
-                raise ValueError("invalid comparison")
+                if COMP == "lt":
+                    target_state = bool(state < TARGET)
+                elif COMP == "le":
+                    target_state = bool(state <= TARGET)
+                elif COMP == "gt":
+                    target_state = bool(state > TARGET)
+                elif COMP == "ge":
+                    target_state = bool(state >= TARGET)
+                elif COMP == "eq":
+                    target_state = bool(state == TARGET)
+                else:
+                    raise ValueError("invalid comparison")
 
-            log("got state, target is " + str(target_state), "HASS")
+                log("got state, target is " + str(target_state), "HASS")
 
-            DEVICE.screen(on=target_state)
-    except Exception as e:
-        print_exc()
+                DEVICE.screen(on=target_state)
+        except Exception as e:
+            print_exc()
 
-    log("sleeping for " + str(SLEEP) + "seconds", "HASS")
-    sleep(CONFIG["request_interval"])
+        log("sleeping for " + str(SLEEP) + " seconds", "HASS")
+        sleep(CONFIG["request_interval"])
 
 
 if __name__ == "__main__":
