@@ -15,11 +15,18 @@
         "placeholder": "https://example.com:8123/"
     }, {
         "title": "API Token",
-        "ui_width": 12,
+        "ui_width": 10,
         "name": "api_token",
         "type": "string",
         "default": "",
         "hint": "go to profile -> security and create a long-lived access token"
+    }, {
+        "title": "Interval",
+        "ui_width": 2,
+        "name": "request_interval",
+        "type": "integer",
+        "default": 30,
+        "hint": "how many seconds to wait before requesting info from home assistant again"
     }, {
         "title": "Entity",
         "type": "section"
@@ -46,7 +53,7 @@
         "title": "Target",
         "ui_width": 4,
         "name": "target",
-        "type": "integer",
-        "default": 0
+        "type": "string",
+        "default": "0"
     }]
 }

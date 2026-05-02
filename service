@@ -17,7 +17,8 @@ def main():
     TOKEN = CONFIG["api_token"]
     ENTITY = CONFIG["entity_id"]
     COMP = CONFIG["comparison"]
-    TARGET = int(CONFIG["target"])
+    TARGET = CONFIG["target"]
+    SLEEP = CONFIG["request_interval"]
 
     if not URL:
         # default config
@@ -46,7 +47,11 @@ def main():
 
             DEVICE.screen(on=True)
         else:
-            state = int(result["state"])
+            if TARGET.isdigit():
+                TARGET = int(TARGET)
+                state = int(result["state"])
+            else:
+                state = result["state"]
 
             if COMP == "lt":
                 target_state = bool(state < TARGET)
@@ -64,11 +69,11 @@ def main():
             log("got state, target is " + str(target_state), "HASS")
 
             DEVICE.screen(on=target_state)
-
-        sleep(30)
     except Exception as e:
         print_exc()
-        sleep(60)
+
+    log("sleeping for " + str(SLEEP) + "seconds", "HASS")
+    sleep(CONFIG["request_interval"])
 
 
 if __name__ == "__main__":
