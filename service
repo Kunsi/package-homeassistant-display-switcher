@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from time import sleep
+from time import sleep, time
 from traceback import print_exc
 
 from requests import get
@@ -24,6 +24,10 @@ def main():
         # default config
         sleep(86400)
 
+    last_change = 0
+    old_state = None
+    new_state = None
+
     while True:
         try:
             url = URL + "/api/states/" + ENTITY
@@ -46,7 +50,7 @@ def main():
                 # oops?
                 log("ERR: no state, switching on", "HASS")
 
-                DEVICE.screen(on=True)
+                new_state = True
             else:
                 if TARGET.isdigit():
                     TARGET = int(TARGET)
@@ -69,12 +73,31 @@ def main():
 
                 log("got state, target is " + str(target_state), "HASS")
 
-                DEVICE.screen(on=target_state)
+                new_state = target_state
         except Exception as e:
             print_exc()
 
-        log("sleeping for " + str(SLEEP) + " seconds", "HASS")
-        sleep(CONFIG["request_interval"])
+        if old_state != new_state:
+            log(
+                "state changed, old " + str(old_state) + ", new " + str(new_state),
+                "HASS",
+            )
+            old_state = new_state
+            DEVICE.screen(on=new_state)
+            last_change = int(time())
+
+        sleep_until = time() + SLEEP
+        log("sleeping for a total of " + str(SLEEP) + " seconds", "HASS")
+        while int(time()) > sleep_until:
+            remaining = int(time() - sleep_until)
+            log("sleeping, " + str(remaining) + " seconds remaining", "HASS")
+
+            if last_change < int(time()) - 30:
+                log("periodic screen state refresher", "HASS")
+                DEVICE.screen(on=old_state)
+                last_change = int(time())
+
+            sleep(1)
 
 
 if __name__ == "__main__":
