@@ -89,7 +89,7 @@ def main():
         sleep_until = time() + SLEEP + 1
         log("sleeping for a total of " + str(SLEEP) + " seconds", "HASS")
         while int(time()) < sleep_until:
-            remaining = int(time() - sleep_until)
+            remaining = sleep_until - time()
             log("sleeping, " + str(remaining) + " seconds remaining", "HASS")
 
             if last_change < int(time()) - 30:
