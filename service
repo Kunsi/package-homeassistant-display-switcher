@@ -86,7 +86,7 @@ def main():
             DEVICE.screen(on=new_state)
             last_change = int(time())
 
-        sleep_until = time() + SLEEP + 1
+        sleep_until = time() + SLEEP
         log("sleeping for a total of " + str(SLEEP) + " seconds", "HASS")
         while int(time()) < sleep_until:
             remaining = sleep_until - time()
